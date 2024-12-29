@@ -4,10 +4,13 @@ export function ScreenController() {
   const locationInput = document.getElementById("location");
 
   locationInput.addEventListener("change", async function (event) {
-    displayLoadingComponent();
-    displayCurrentWeatherData(
-      await getWeatherData(handleError, event.target.value)
-    );
+    if (event.target.value !== "") {
+      displayLoadingComponent();
+      const weatherData = await getWeatherData(handleError, event.target.value);
+      if (weatherData !== undefined) {
+        displayCurrentWeatherData(weatherData);
+      }
+    }
   });
 }
 
@@ -101,6 +104,6 @@ function handleError(errorMessage) {
   const error = document.querySelector(".error-text");
   const weatherWidget = document.querySelector(".weather-widget");
 
-  weatherWidget.style.display = "none";
+  weatherWidget.classList.remove("loading");
   error.textContent = errorMessage;
 }
