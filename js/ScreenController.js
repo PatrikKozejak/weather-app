@@ -4,6 +4,7 @@ export function ScreenController() {
   const locationInput = document.getElementById("location");
 
   locationInput.addEventListener("change", async function (event) {
+    displayLoadingComponent();
     displayCurrentWeatherData(
       await getWeatherData(handleError, event.target.value)
     );
@@ -11,6 +12,8 @@ export function ScreenController() {
 }
 
 function displayCurrentWeatherData(weatherData) {
+  const weatherWidget = document.querySelector(".weather-widget");
+  weatherWidget.classList.remove("loading");
   let weatherLocationDiv = document.querySelector(".weather-location");
   let currentWeatherDiv = document.querySelector(".weather-current");
   weatherLocationDiv.style.display = "flex";
@@ -42,10 +45,6 @@ function displayCurrentWeatherData(weatherData) {
 
 function displayWeatherForecast(weatherForecastData) {
   const weatherForecastDiv = document.querySelector(".weather-forecast");
-  while (weatherForecastDiv.firstChild) {
-    weatherForecastDiv.removeChild(weatherForecastDiv.firstChild);
-  }
-
   for (let forecastDay = 0; forecastDay < 5; forecastDay++) {
     const isToday = forecastDay === 0 ? true : false;
     const forecastDayDiv = createForecastPreview(
@@ -81,6 +80,21 @@ function createForecastPreview(dailyForecastData, isToday) {
   dayForecastDiv.appendChild(minTempDiv);
 
   return dayForecastDiv;
+}
+
+function displayLoadingComponent() {
+  let weatherLocationDiv = document.querySelector(".weather-location");
+  let currentWeatherDiv = document.querySelector(".weather-current");
+
+  const weatherForecastDiv = document.querySelector(".weather-forecast");
+  while (weatherForecastDiv.firstChild) {
+    weatherForecastDiv.removeChild(weatherForecastDiv.firstChild);
+  }
+
+  const weatherWidget = document.querySelector(".weather-widget");
+  weatherLocationDiv.style.display = "none";
+  currentWeatherDiv.style.display = "none";
+  weatherWidget.classList.add("loading");
 }
 
 function handleError(errorMessage) {
